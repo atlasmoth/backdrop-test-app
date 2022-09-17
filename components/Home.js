@@ -11,6 +11,10 @@ import {
 } from "react-native";
 import { APP_COLORS, fetchCats } from "../utils/config";
 import { AntDesign } from "@expo/vector-icons";
+import { createShimmerPlaceholder } from "react-native-shimmer-placeholder";
+import { LinearGradient } from "expo-linear-gradient";
+
+const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
 
 function Home({ setFavorites, favorites }) {
   const [cats, setCats] = useState([]);
@@ -94,6 +98,7 @@ function Home({ setFavorites, favorites }) {
 }
 
 function CatCard({ breeds, id, url, setFavorites, favorites }) {
+  const [showImage, setShowImage] = useState(false);
   const isClicked = useMemo(
     () => Boolean(favorites.find((f) => f.id === id)),
     [favorites]
@@ -119,11 +124,25 @@ function CatCard({ breeds, id, url, setFavorites, favorites }) {
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <Image
-          source={{ uri: url }}
-          style={{ width: 40, height: 40, borderRadius: 10 }}
-          resizeMode="cover"
-        />
+        <View>
+          <ShimmerPlaceholder
+            style={{
+              width: showImage ? 0 : 40,
+              height: showImage ? 0 : 40,
+              borderRadius: 10,
+            }}
+          />
+          <Image
+            onLoad={() => setShowImage(true)}
+            source={{ uri: url }}
+            style={{
+              width: !showImage ? 0 : 40,
+              height: !showImage ? 0 : 40,
+              borderRadius: 10,
+            }}
+            resizeMode="cover"
+          />
+        </View>
         <Text
           style={{
             fontFamily: "sfpro",

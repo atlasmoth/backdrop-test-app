@@ -1,6 +1,11 @@
 import { Text, View, ScrollView, TouchableOpacity, Image } from "react-native";
 import { APP_COLORS } from "../utils/config";
 import { AntDesign } from "@expo/vector-icons";
+import { useState } from "react";
+import { createShimmerPlaceholder } from "react-native-shimmer-placeholder";
+import { LinearGradient } from "expo-linear-gradient";
+
+const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
 
 function Cats({ setFavorites, favorites, navigation }) {
   if (favorites.length < 1) {
@@ -86,6 +91,8 @@ function Cats({ setFavorites, favorites, navigation }) {
 }
 
 function CatFlexCard({ breeds, id, url, setFavorites }) {
+  const [showImage, setShowImage] = useState(false);
+
   return (
     <View
       style={{
@@ -98,9 +105,21 @@ function CatFlexCard({ breeds, id, url, setFavorites }) {
       }}
     >
       <View>
+        <ShimmerPlaceholder
+          style={{
+            width: showImage ? 0 : "100%",
+            height: showImage ? 0 : 150,
+            borderRadius: 10,
+          }}
+        />
         <Image
+          onLoad={() => setShowImage(true)}
           source={{ uri: url }}
-          style={{ width: "100%", height: 150, borderRadius: 10 }}
+          style={{
+            width: !showImage ? 0 : "100%",
+            height: !showImage ? 0 : 150,
+            borderRadius: 10,
+          }}
           resizeMode="cover"
         />
         <View
@@ -118,11 +137,13 @@ function CatFlexCard({ breeds, id, url, setFavorites }) {
               fontFamily: "sfpro",
               fontSize: 14,
               lineHeight: 18,
+              flex: 1,
             }}
           >
             {breeds[0].name}
           </Text>
           <TouchableOpacity
+            style={{ flexBasis: 20, flexShrink: 0 }}
             testID="cat-button"
             onPress={() => {
               setFavorites((f) => [...f.filter((obj) => obj.id !== id)]);
