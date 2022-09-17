@@ -15,7 +15,7 @@ function Home({ setFavorites, favorites }) {
   const [cats, setCats] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    fetchCats()
+    fetchCats(20)
       .then((d) => setCats([...d]))
       .catch(({ message }) => Alert.alert("Oops", message))
       .finally(() => setLoading(false));
