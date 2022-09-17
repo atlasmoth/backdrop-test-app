@@ -60,6 +60,7 @@ function Cats({ setFavorites, favorites, navigation }) {
               fontSize: 16,
               lineHeight: 24,
               paddingLeft: 10,
+              paddingTop: 30,
             }}
           >
             Cats I like
@@ -90,7 +91,7 @@ function CatFlexCard({ breeds, id, url, setFavorites }) {
       style={{
         flexBasis: 150,
         flexGrow: 1,
-        flexShrink: 1,
+        flexShrink: 0,
         paddingVertical: 20,
         paddingLeft: 10,
         paddingRight: 10,

@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import {
   Text,
   View,
-  ScrollView,
+  FlatList,
   TouchableOpacity,
   ActivityIndicator,
   Image,
@@ -15,13 +15,13 @@ function Home({ setFavorites, favorites }) {
   const [cats, setCats] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    fetchCats(30)
+    fetchCats()
       .then((d) => setCats([...d]))
       .catch(({ message }) => Alert.alert("Oops", message))
       .finally(() => setLoading(false));
   }, [setCats]);
   return (
-    <ScrollView
+    <View
       style={{ backgroundColor: APP_COLORS.white, flexGrow: 1 }}
       showsVerticalScrollIndicator={false}
     >
@@ -45,6 +45,7 @@ function Home({ setFavorites, favorites }) {
               fontWeight: "bold",
               fontSize: 16,
               lineHeight: 24,
+              paddingTop: 30,
             }}
           >
             All Cats
@@ -61,19 +62,23 @@ function Home({ setFavorites, favorites }) {
               <ActivityIndicator color={APP_COLORS.grey} size="large" />
             </View>
           )}
-          {!loading &&
-            cats.length > 0 &&
-            cats.map((c) => (
-              <CatCard
-                key={c.id}
-                {...c}
-                setFavorites={setFavorites}
-                favorites={favorites}
-              />
-            ))}
+          {!loading && (
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              data={cats}
+              renderItem={({ item }) => (
+                <CatCard
+                  {...item}
+                  setFavorites={setFavorites}
+                  favorites={favorites}
+                />
+              )}
+              keyExtractor={(item) => item.id}
+            />
+          )}
         </View>
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
