@@ -8,7 +8,7 @@ export const APP_COLORS = {
 const API_KEY =
   "live_83JPCzHUeJT2Pe9aSl1HalkJgPSOdy8rvbjOwKmjzQEhlt18SorQPZnchCamKfWm";
 
-export const fetchCats = async (limit) => {
+export const fetchCats = async (limit = 10) => {
   const catsUrl = `https://api.thecatapi.com/v1/images/search?limit=${limit}&api_key=${API_KEY}&has_breeds=1`;
 
   const res = await fetch(catsUrl, {
@@ -17,7 +17,6 @@ export const fetchCats = async (limit) => {
       "Content-Type": "Application/json",
     },
   });
-
   if (!res.ok || !res.status.toString().startsWith("2"))
     throw new Error("Ooops, something went wrong");
   const catsData = await res.json();

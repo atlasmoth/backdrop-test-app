@@ -2,7 +2,36 @@ import { Text, View, ScrollView, TouchableOpacity, Image } from "react-native";
 import { APP_COLORS } from "../utils/config";
 import { AntDesign } from "@expo/vector-icons";
 
-export default function Cats({ setFavorites, favorites }) {
+function Cats({ setFavorites, favorites, navigation }) {
+  if (favorites.length < 1) {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate("Home");
+        }}
+        testID="button"
+        style={{
+          flexGrow: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: APP_COLORS.white,
+          padding: 20,
+        }}
+      >
+        <AntDesign name="arrowleft" size={40} color={APP_COLORS.black} />
+        <Text
+          style={{
+            fontFamily: "sfpro",
+            fontSize: 24,
+            lineHeight: 28,
+            marginTop: 20,
+          }}
+        >
+          Please like a cat first
+        </Text>
+      </TouchableOpacity>
+    );
+  }
   return (
     <ScrollView
       style={{ backgroundColor: APP_COLORS.white, flexGrow: 1 }}
@@ -16,9 +45,12 @@ export default function Cats({ setFavorites, favorites }) {
       >
         <View
           style={{
-            flexGrow: 1,
+            flex: 1,
             maxWidth: 650,
-            padding: 25,
+            padding: 20,
+            paddingHorizontal: 10,
+
+            flexBasis: "100%",
           }}
         >
           <Text
@@ -27,6 +59,7 @@ export default function Cats({ setFavorites, favorites }) {
               fontWeight: "bold",
               fontSize: 16,
               lineHeight: 24,
+              paddingLeft: 10,
             }}
           >
             Cats I like
@@ -34,17 +67,16 @@ export default function Cats({ setFavorites, favorites }) {
           <View
             style={{
               flexDirection: "row",
-              justifyContent: "space-between",
+              justifyContent: "center",
               flexWrap: "wrap",
+              flexGrow: 1,
+              flexShrink: 1,
+              flexBasis: "100%",
             }}
           >
-            {favorites.length > 0 && (
-              <>
-                {favorites.map((f) => (
-                  <CatFlexCard key={f.id} {...f} />
-                ))}
-              </>
-            )}
+            {favorites.map((f) => (
+              <CatFlexCard key={f.id} {...f} setFavorites={setFavorites} />
+            ))}
           </View>
         </View>
       </View>
@@ -54,51 +86,54 @@ export default function Cats({ setFavorites, favorites }) {
 
 function CatFlexCard({ breeds, id, url, setFavorites }) {
   return (
-    <TouchableOpacity
-      onPress={() => {
-        setFavorites((f) => [...f.filter((obj) => obj.id !== id)]);
-      }}
+    <View
       style={{
-        marginVertical: 20,
         flexBasis: 150,
-        flexShrink: 0,
-        height: 200,
-        justifyContent: "space-between",
+        flexGrow: 1,
+        flexShrink: 1,
+        paddingVertical: 20,
+        paddingLeft: 10,
+        paddingRight: 10,
       }}
     >
-      <Image
-        source={{ uri: url }}
-        style={{ width: 150, height: 150, borderRadius: 10 }}
-        resizeMode="cover"
-      />
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-        }}
-      >
-        <Text
+      <View>
+        <Image
+          source={{ uri: url }}
+          style={{ width: "100%", height: 150, borderRadius: 10 }}
+          resizeMode="cover"
+        />
+        <View
           style={{
-            fontFamily: "sfpro",
-            fontWeight: 600,
-            fontSize: 16,
-            lineHeight: 24,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            paddingHorizontal: 5,
+            marginTop: 10,
           }}
         >
-          {breeds[0].name}
-        </Text>
-        <View>
-          <AntDesign name="heart" size={18} color={APP_COLORS.red} />
+          <Text
+            style={{
+              fontFamily: "sfpro",
+              fontSize: 14,
+              lineHeight: 18,
+            }}
+          >
+            {breeds[0].name}
+          </Text>
+          <TouchableOpacity
+            testID="cat-button"
+            onPress={() => {
+              setFavorites((f) => [...f.filter((obj) => obj.id !== id)]);
+            }}
+          >
+            <AntDesign name="heart" size={18} color={APP_COLORS.red} />
+          </TouchableOpacity>
         </View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }
 
-CatFlexCard.defaultProps = {
-  breeds: [],
-  url: "",
-  id: "",
-};
+export default Cats;
+export { CatFlexCard };

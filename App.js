@@ -6,7 +6,8 @@ import { useFonts } from "expo-font";
 import { APP_COLORS } from "./utils/config";
 import Home from "./components/Home";
 import Cats from "./components/Cats";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import storage from "./utils/storage";
 
 const Tab = createBottomTabNavigator();
 
@@ -100,7 +101,12 @@ function MyTabBar({ state, descriptors, navigation }) {
 
 export default function App() {
   // simple state management for a simple app
-  const [favorites, setFavorites] = useState([]);
+  const [favorites, setFavorites] = useState(
+    JSON.parse(storage.getString("favorites") || "[]")
+  );
+  useEffect(() => {
+    storage.set("favorites", JSON.stringify(favorites));
+  }, [favorites]);
 
   const [fontsLoaded] = useFonts({
     sfpro: require("./assets/fonts/sfpro.ttf"),
@@ -132,7 +138,7 @@ export default function App() {
             },
           }}
         >
-          {() => <Home setFavorites={setFavorites} />}
+          {() => <Home setFavorites={setFavorites} favorites={favorites} />}
         </Tab.Screen>
         <Tab.Screen
           name="Favorites"
@@ -156,7 +162,13 @@ export default function App() {
             ),
           }}
         >
-          {() => <Cats setFavorites={setFavorites} favorites={favorites} />}
+          {(props) => (
+            <Cats
+              setFavorites={setFavorites}
+              favorites={favorites}
+              {...props}
+            />
+          )}
         </Tab.Screen>
       </Tab.Navigator>
     </NavigationContainer>

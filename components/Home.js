@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   Text,
   View,
@@ -6,17 +6,18 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Image,
+  Alert,
 } from "react-native";
 import { APP_COLORS, fetchCats } from "../utils/config";
 import { AntDesign } from "@expo/vector-icons";
 
-export default function Home({ setFavorites }) {
+function Home({ setFavorites, favorites }) {
   const [cats, setCats] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     fetchCats(30)
       .then((d) => setCats([...d]))
-      .catch()
+      .catch(({ message }) => Alert.alert("Oops", message))
       .finally(() => setLoading(false));
   }, [setCats]);
   return (
@@ -32,9 +33,10 @@ export default function Home({ setFavorites }) {
       >
         <View
           style={{
-            flexGrow: 1,
+            flex: 1,
             maxWidth: 650,
-            padding: 25,
+            padding: 20,
+            flexBasis: "100%",
           }}
         >
           <Text
@@ -62,7 +64,12 @@ export default function Home({ setFavorites }) {
           {!loading &&
             cats.length > 0 &&
             cats.map((c) => (
-              <CatCard key={c.id} {...c} setFavorites={setFavorites} />
+              <CatCard
+                key={c.id}
+                {...c}
+                setFavorites={setFavorites}
+                favorites={favorites}
+              />
             ))}
         </View>
       </View>
@@ -70,13 +77,16 @@ export default function Home({ setFavorites }) {
   );
 }
 
-function CatCard({ breeds, id, url, setFavorites }) {
-  const [isClicked, setIsClicked] = useState(false);
+function CatCard({ breeds, id, url, setFavorites, favorites }) {
+  const isClicked = useMemo(
+    () => Boolean(favorites.find((f) => f.id === id)),
+    [favorites]
+  );
 
   return (
     <TouchableOpacity
+      testID="home-cat-button"
       onPress={() => {
-        setIsClicked((s) => !s);
         isClicked
           ? setFavorites((f) => [...f.filter((obj) => obj.id !== id)])
           : setFavorites((f) => [
@@ -101,13 +111,12 @@ function CatCard({ breeds, id, url, setFavorites }) {
         <Text
           style={{
             fontFamily: "sfpro",
-            fontWeight: 600,
             marginLeft: 10,
-            fontSize: 16,
-            lineHeight: 24,
+            fontSize: 14,
+            lineHeight: 18,
           }}
         >
-          {breeds[0].name}
+          {breeds[0]?.name}
         </Text>
       </View>
       <View>
@@ -121,8 +130,5 @@ function CatCard({ breeds, id, url, setFavorites }) {
   );
 }
 
-CatCard.defaultProps = {
-  breeds: [],
-  url: "",
-  id: "",
-};
+export default Home;
+export { CatCard };
