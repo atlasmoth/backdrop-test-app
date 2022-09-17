@@ -71,5 +71,5 @@ buck-out/
 .expo/
 web-build/
 dist/
-coverage/\*\*/*
+coverage/
 # @end expo-cli
