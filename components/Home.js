@@ -1,12 +1,13 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import {
   Text,
   View,
-  FlatList,
+  ScrollView,
   TouchableOpacity,
   ActivityIndicator,
   Image,
   Alert,
+  RefreshControl,
 } from "react-native";
 import { APP_COLORS, fetchCats } from "../utils/config";
 import { AntDesign } from "@expo/vector-icons";
@@ -14,14 +15,29 @@ import { AntDesign } from "@expo/vector-icons";
 function Home({ setFavorites, favorites }) {
   const [cats, setCats] = useState([]);
   const [loading, setLoading] = useState(true);
-  useEffect(() => {
+  const [refreshing, setRefreshing] = useState(false);
+
+  const getData = useCallback(() => {
     fetchCats(20)
       .then((d) => setCats([...d]))
       .catch(({ message }) => Alert.alert("Oops", message))
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+        setRefreshing(false);
+      });
+  }, []);
+  const onRefresh = () => {
+    setRefreshing(true);
+    getData();
+  };
+  useEffect(() => {
+    getData();
   }, [setCats]);
   return (
-    <View
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
       style={{ backgroundColor: APP_COLORS.white, flexGrow: 1 }}
       showsVerticalScrollIndicator={false}
     >
@@ -43,7 +59,7 @@ function Home({ setFavorites, favorites }) {
             style={{
               fontFamily: "sfpro",
               fontWeight: "bold",
-              fontSize: 16,
+              fontSize: 20,
               lineHeight: 24,
               paddingTop: 30,
             }}
@@ -62,23 +78,18 @@ function Home({ setFavorites, favorites }) {
               <ActivityIndicator color={APP_COLORS.grey} size="large" />
             </View>
           )}
-          {!loading && (
-            <FlatList
-              showsVerticalScrollIndicator={false}
-              data={cats}
-              renderItem={({ item }) => (
-                <CatCard
-                  {...item}
-                  setFavorites={setFavorites}
-                  favorites={favorites}
-                />
-              )}
-              keyExtractor={(item) => item.id}
-            />
-          )}
+          {!loading &&
+            cats.map((item) => (
+              <CatCard
+                key={item.id}
+                {...item}
+                setFavorites={setFavorites}
+                favorites={favorites}
+              />
+            ))}
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 

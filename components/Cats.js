@@ -57,7 +57,7 @@ function Cats({ setFavorites, favorites, navigation }) {
             style={{
               fontFamily: "sfpro",
               fontWeight: "bold",
-              fontSize: 16,
+              fontSize: 20,
               lineHeight: 24,
               paddingLeft: 10,
               paddingTop: 30,
