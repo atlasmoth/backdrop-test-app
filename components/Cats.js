@@ -1,11 +1,7 @@
-import { Text, View, ScrollView, TouchableOpacity, Image } from "react-native";
+import { Text, View, ScrollView, TouchableOpacity } from "react-native";
 import { APP_COLORS } from "../utils/config";
 import { AntDesign } from "@expo/vector-icons";
-import { useState } from "react";
-import { createShimmerPlaceholder } from "react-native-shimmer-placeholder";
-import { LinearGradient } from "expo-linear-gradient";
-
-const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
+import Shimmer from "./Shimmer";
 
 function Cats({ setFavorites, favorites, navigation }) {
   if (favorites.length < 1) {
@@ -38,61 +34,54 @@ function Cats({ setFavorites, favorites, navigation }) {
     );
   }
   return (
-    <ScrollView
-      style={{ backgroundColor: APP_COLORS.white, flexGrow: 1 }}
-      showsVerticalScrollIndicator={false}
-    >
+    <View style={{ backgroundColor: APP_COLORS.white, flexGrow: 1 }}>
       <View
         style={{
-          flexDirection: "row",
-          justifyContent: "center",
+          width: "100%",
+          maxWidth: 600,
+          paddingTop: 20,
+          paddingHorizontal: 10,
+          marginLeft: "auto",
+          marginRight: "auto",
         }}
       >
-        <View
+        <Text
           style={{
-            flex: 1,
-            maxWidth: 650,
-            padding: 20,
-            paddingHorizontal: 10,
-
-            flexBasis: "100%",
+            fontFamily: "sfpro",
+            fontWeight: "bold",
+            fontSize: 20,
+            lineHeight: 24,
+            paddingLeft: 10,
+            paddingTop: 30,
           }}
         >
-          <Text
-            style={{
-              fontFamily: "sfpro",
-              fontWeight: "bold",
-              fontSize: 20,
-              lineHeight: 24,
-              paddingLeft: 10,
-              paddingTop: 30,
-            }}
-          >
-            Cats I like
-          </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              flexWrap: "wrap",
-              flexGrow: 1,
-              flexShrink: 1,
-              flexBasis: "100%",
-            }}
-          >
-            {favorites.map((f) => (
-              <CatFlexCard key={f.id} {...f} setFavorites={setFavorites} />
-            ))}
-          </View>
-        </View>
+          Cats I like
+        </Text>
       </View>
-    </ScrollView>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          flexDirection: "row",
+          justifyContent: "center",
+          flexWrap: "wrap",
+          flexGrow: 1,
+          width: "100%",
+          maxWidth: 600,
+          paddingBottom: 90,
+          paddingHorizontal: 10,
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
+      >
+        {favorites.map((f) => (
+          <CatFlexCard key={f.id} {...f} setFavorites={setFavorites} />
+        ))}
+      </ScrollView>
+    </View>
   );
 }
 
 function CatFlexCard({ breeds, id, url, setFavorites }) {
-  const [showImage, setShowImage] = useState(false);
-
   return (
     <View
       style={{
@@ -105,23 +94,15 @@ function CatFlexCard({ breeds, id, url, setFavorites }) {
       }}
     >
       <View>
-        <ShimmerPlaceholder
+        <Shimmer
+          src={{ uri: url }}
+          width="100%"
+          height={150}
           style={{
-            width: showImage ? 0 : "100%",
-            height: showImage ? 0 : 150,
             borderRadius: 10,
           }}
         />
-        <Image
-          onLoad={() => setShowImage(true)}
-          source={{ uri: url }}
-          style={{
-            width: !showImage ? 0 : "100%",
-            height: !showImage ? 0 : 150,
-            borderRadius: 10,
-          }}
-          resizeMode="cover"
-        />
+
         <View
           style={{
             flexDirection: "row",

@@ -2,103 +2,86 @@ import { useEffect, useState, useMemo, useCallback } from "react";
 import {
   Text,
   View,
-  ScrollView,
   TouchableOpacity,
   ActivityIndicator,
-  Image,
   Alert,
-  RefreshControl,
+  FlatList,
 } from "react-native";
 import { APP_COLORS, fetchCats } from "../utils/config";
 import { AntDesign } from "@expo/vector-icons";
-import { createShimmerPlaceholder } from "react-native-shimmer-placeholder";
-import { LinearGradient } from "expo-linear-gradient";
-
-const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
+import Shimmer from "./Shimmer";
 
 function Home({ setFavorites, favorites }) {
   const [cats, setCats] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
 
   const getData = useCallback(() => {
-    fetchCats(20)
+    fetchCats(30)
       .then((d) => setCats([...d]))
       .catch(({ message }) => Alert.alert("Oops", message))
       .finally(() => {
         setLoading(false);
-        setRefreshing(false);
       });
   }, []);
-  const onRefresh = () => {
-    setRefreshing(true);
-    getData();
-  };
+
   useEffect(() => {
     getData();
   }, [setCats]);
   return (
-    <ScrollView
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-      style={{ backgroundColor: APP_COLORS.white, flexGrow: 1 }}
-      showsVerticalScrollIndicator={false}
-    >
+    <View style={{ backgroundColor: APP_COLORS.white, flexGrow: 1 }}>
       <View
         style={{
-          flexDirection: "row",
-          justifyContent: "center",
+          flexGrow: 1,
+          width: "100%",
+          maxWidth: 600,
+          padding: 20,
+          marginLeft: "auto",
+          marginRight: "auto",
         }}
       >
-        <View
+        <Text
           style={{
-            flex: 1,
-            maxWidth: 650,
-            padding: 20,
-            flexBasis: "100%",
+            fontFamily: "sfpro",
+            fontWeight: "bold",
+            fontSize: 20,
+            lineHeight: 24,
+            paddingTop: 30,
           }}
         >
-          <Text
+          All Cats
+        </Text>
+        {loading && (
+          <View
             style={{
-              fontFamily: "sfpro",
-              fontWeight: "bold",
-              fontSize: 20,
-              lineHeight: 24,
-              paddingTop: 30,
+              flexDirection: "row",
+              justifyContent: "center",
+              paddingVertical: 10,
+              marginTop: 40,
             }}
           >
-            All Cats
-          </Text>
-          {loading && (
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                paddingVertical: 10,
-                marginTop: 40,
-              }}
-            >
-              <ActivityIndicator color={APP_COLORS.grey} size="large" />
-            </View>
-          )}
-          {!loading &&
-            cats.map((item) => (
+            <ActivityIndicator color={APP_COLORS.grey} size="large" />
+          </View>
+        )}
+        {!loading && (
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            data={cats}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
               <CatCard
-                key={item.id}
                 {...item}
                 setFavorites={setFavorites}
                 favorites={favorites}
               />
-            ))}
-        </View>
+            )}
+          />
+        )}
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
 function CatCard({ breeds, id, url, setFavorites, favorites }) {
-  const [showImage, setShowImage] = useState(false);
   const isClicked = useMemo(
     () => Boolean(favorites.find((f) => f.id === id)),
     [favorites]
@@ -125,22 +108,13 @@ function CatCard({ breeds, id, url, setFavorites, favorites }) {
     >
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <View>
-          <ShimmerPlaceholder
+          <Shimmer
+            src={{ uri: url }}
             style={{
-              width: showImage ? 0 : 40,
-              height: showImage ? 0 : 40,
               borderRadius: 10,
             }}
-          />
-          <Image
-            onLoad={() => setShowImage(true)}
-            source={{ uri: url }}
-            style={{
-              width: !showImage ? 0 : 40,
-              height: !showImage ? 0 : 40,
-              borderRadius: 10,
-            }}
-            resizeMode="cover"
+            width={40}
+            height={40}
           />
         </View>
         <Text
