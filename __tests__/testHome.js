@@ -13,11 +13,20 @@ beforeEach(() => {
   fetch.resetMocks();
 });
 
-test("Test Home component", async () => {
-  fetch.mockResponseOnce(JSON.stringify(catsForTesting));
+test("Test Home component with existing data", async () => {
   const setFavorites = jest.fn();
+  const setCats = jest.fn();
+
   const favorites = [...catsForTesting];
-  render(<Home favorites={favorites} setFavorites={setFavorites} />);
+  const cats = [...catsForTesting];
+  render(
+    <Home
+      favorites={favorites}
+      setFavorites={setFavorites}
+      setCats={setCats}
+      cats={cats}
+    />
+  );
   await waitFor(() => screen.getByText("Arabian Mau"));
   const element = screen.getByText("Arabian Mau");
 
@@ -25,6 +34,30 @@ test("Test Home component", async () => {
 
   fireEvent.press(screen.getAllByTestId("home-cat-button")[0]);
   expect(setFavorites).toHaveBeenCalled();
+});
+
+test("Test Home component without existing data", async () => {
+  fetch.mockResponseOnce(JSON.stringify(catsForTesting));
+  const setFavorites = jest.fn();
+
+  const favorites = [...catsForTesting];
+  const cats = [];
+  const setCats = jest.fn();
+  render(
+    <Home
+      favorites={favorites}
+      setFavorites={setFavorites}
+      setCats={setCats}
+      cats={cats}
+    />
+  );
+
+  await waitFor(() => screen.getByTestId("home-flatlist"));
+  const element = screen.getByTestId("home-flatlist");
+
+  expect(element).toBeTruthy();
+
+  expect(setCats).toHaveBeenCalled();
 });
 
 test("Test CatCard component", async () => {

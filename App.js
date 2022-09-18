@@ -99,7 +99,8 @@ function MyTabBar({ state, descriptors, navigation }) {
 }
 
 export default function App() {
-  const [favorites, setFavorites, initLoading] = useFavorites();
+  const { favorites, setFavorites, initLoading, cats, setCats } =
+    useFavorites();
 
   const [fontsLoaded] = useFonts({
     sfpro: require("./assets/fonts/sfpro.otf"),
@@ -131,7 +132,14 @@ export default function App() {
             },
           }}
         >
-          {() => <Home setFavorites={setFavorites} favorites={favorites} />}
+          {() => (
+            <Home
+              setFavorites={setFavorites}
+              favorites={favorites}
+              cats={cats}
+              setCats={setCats}
+            />
+          )}
         </Tab.Screen>
         <Tab.Screen
           name="Favorites"

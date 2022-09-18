@@ -12,9 +12,8 @@ import { APP_COLORS, fetchCats } from "../utils/config";
 import { AntDesign } from "@expo/vector-icons";
 import Shimmer from "./Shimmer";
 
-function Home({ setFavorites, favorites }) {
-  const [cats, setCats] = useState([]);
-  const [loading, setLoading] = useState(true);
+function Home({ setFavorites, favorites, cats, setCats }) {
+  const [loading, setLoading] = useState(cats.length < 1);
   const [refreshing, setRefreshing] = useState(false);
 
   const getData = useCallback(() => {
@@ -31,8 +30,10 @@ function Home({ setFavorites, favorites }) {
     getData();
   };
   useEffect(() => {
-    getData();
-  }, [setCats]);
+    if (cats.length < 1) {
+      getData();
+    }
+  }, [setCats, cats.length]);
   return (
     <View style={{ backgroundColor: APP_COLORS.white, flexGrow: 1 }}>
       <View
@@ -70,6 +71,7 @@ function Home({ setFavorites, favorites }) {
         )}
         {!loading && (
           <FlatList
+            testID="home-flatlist"
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }

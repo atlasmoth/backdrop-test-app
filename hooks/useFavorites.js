@@ -3,23 +3,29 @@ import { useEffect, useState } from "react";
 
 function useFavorites() {
   const [favorites, setFavorites] = useState([]);
+  const [cats, setCats] = useState([]);
   const [initLoading, setInitLoading] = useState(true);
 
   useEffect(() => {
-    AsyncStorage.getItem("favorites")
+    AsyncStorage.getItem("state")
       .then((result) => {
-        setFavorites(JSON.parse(result || "[]"));
+        if (result) {
+          const { favorites, cats } = JSON.parse(result);
+          setFavorites(favorites);
+          setCats(cats);
+        }
+
         setInitLoading(false);
       })
       .catch(console.log);
-  }, [setFavorites]);
+  }, [setFavorites, setCats]);
   useEffect(() => {
-    AsyncStorage.setItem("favorites", JSON.stringify(favorites)).catch(
+    AsyncStorage.setItem("state", JSON.stringify({ favorites, cats })).catch(
       console.log
     );
-  }, [favorites]);
+  }, [favorites, cats]);
 
-  return [favorites, setFavorites, initLoading];
+  return { favorites, setFavorites, initLoading, cats, setCats };
 }
 
 export default useFavorites;
