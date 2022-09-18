@@ -1,6 +1,6 @@
 # Backdrop test app
 
-This is a react native app built with Expo; my submission for Backdrop's react native coding challenge.
+This is a react native app built with Expo; my submission for Backdrop's react native coding challenge. Load random cats from the internet, persist favorites to offline storage, pull down to refresh and load new cats.
 ![App Screenshot](./assets/home.png)
 ![App Screenshot](./assets/cats.png)
 
