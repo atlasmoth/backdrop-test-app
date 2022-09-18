@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   Alert,
   FlatList,
+  RefreshControl,
 } from "react-native";
 import { APP_COLORS, fetchCats } from "../utils/config";
 import { AntDesign } from "@expo/vector-icons";
@@ -14,6 +15,7 @@ import Shimmer from "./Shimmer";
 function Home({ setFavorites, favorites }) {
   const [cats, setCats] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   const getData = useCallback(() => {
     fetchCats(30)
@@ -21,9 +23,13 @@ function Home({ setFavorites, favorites }) {
       .catch(({ message }) => Alert.alert("Oops", message))
       .finally(() => {
         setLoading(false);
+        setRefreshing(false);
       });
   }, []);
-
+  const onRefresh = () => {
+    setRefreshing(true);
+    getData();
+  };
   useEffect(() => {
     getData();
   }, [setCats]);
@@ -64,6 +70,9 @@ function Home({ setFavorites, favorites }) {
         )}
         {!loading && (
           <FlatList
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
             showsVerticalScrollIndicator={false}
             data={cats}
             keyExtractor={(item) => item.id}
