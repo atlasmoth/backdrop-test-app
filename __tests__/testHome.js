@@ -40,7 +40,7 @@ test("Test Home component without existing data", async () => {
   fetch.mockResponseOnce(JSON.stringify(catsForTesting));
   const setFavorites = jest.fn();
 
-  const favorites = [...catsForTesting];
+  const favorites = [catsForTesting[0]];
   const cats = [];
   const setCats = jest.fn();
   render(
@@ -57,7 +57,7 @@ test("Test Home component without existing data", async () => {
 
   expect(element).toBeTruthy();
 
-  expect(setCats).toHaveBeenCalled();
+  expect(setCats).toHaveBeenCalledWith(catsForTesting);
 });
 
 test("Test CatCard component", async () => {
