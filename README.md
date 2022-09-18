@@ -1,6 +1,8 @@
 # Backdrop test app
 
 This is a react native app built with Expo; my submission for Backdrop's react native coding challenge.
+![App Screenshot](./assets/home.png)
+![App Screenshot](./assets/cats.png)
 
 ## Installation
 
@@ -13,7 +15,7 @@ npm install
 Start android/web/IOS app
 
 ```bash
-npx expo run:[ios/android/web]
+npm run [ios/android/web]
 ```
 
 ## Run test suites
