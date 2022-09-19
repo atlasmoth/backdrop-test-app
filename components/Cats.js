@@ -1,4 +1,4 @@
-import { Text, View, ScrollView, TouchableOpacity } from "react-native";
+import { Text, View, FlatList, TouchableOpacity } from "react-native";
 import { APP_COLORS } from "../utils/config";
 import { AntDesign } from "@expo/vector-icons";
 import Shimmer from "./Shimmer";
@@ -58,13 +58,10 @@ function Cats({ setFavorites, favorites, navigation }) {
           Cats I like
         </Text>
       </View>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
+      <FlatList
+        showsHorizontalScrollIndicator={false}
+        numColumns={2}
         contentContainerStyle={{
-          flexDirection: "row",
-          justifyContent: "center",
-          flexWrap: "wrap",
-          flexGrow: 1,
           width: "100%",
           maxWidth: 600,
           paddingBottom: 90,
@@ -72,11 +69,12 @@ function Cats({ setFavorites, favorites, navigation }) {
           marginLeft: "auto",
           marginRight: "auto",
         }}
-      >
-        {favorites.map((f) => (
-          <CatFlexCard key={f.id} {...f} setFavorites={setFavorites} />
-        ))}
-      </ScrollView>
+        data={favorites}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <CatFlexCard {...item} setFavorites={setFavorites} />
+        )}
+      />
     </View>
   );
 }
