@@ -59,7 +59,7 @@ function Cats({ setFavorites, favorites, navigation }) {
         </Text>
       </View>
       <FlatList
-        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
         numColumns={2}
         contentContainerStyle={{
           width: "100%",

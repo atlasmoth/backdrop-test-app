@@ -1,5 +1,6 @@
 {
-  "name": "backdrop",
+  "name": "backdrop-chukwuebuka-osuji",
+  "author": "Chukwuebuka Osuji",
   "version": "1.0.0",
   "scripts": {
     "start": "react-native start",
